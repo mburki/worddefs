@@ -129,7 +129,7 @@ def process_data():
 
     now = time.strftime('%Y%m%d-%H%M%S')
     logging.info('Backing up processed data file.')
-    # os.rename(in_file,re.sub(r"\.[a-zA-Z0-9]+$", '', in_file) + '_' + now + '.csv')  
+    os.rename(in_file,re.sub(r"\.[a-zA-Z0-9]+$", '', in_file) + '_' + now + '.csv')  
     logging.info('STATISTICS: ' + str(load_count) + ' word(s) loaded - ' 
                                 + str(succ_count) + ' definition(s) retrieved - ' 
                                 + str(err_count) + ' error(s).')
