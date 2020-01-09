@@ -1,0 +1,9 @@
+[DictAPI]
+app_id = xxxxxxxx
+app_key = xxxxxxxxxxxxxxxxxxxxxxxxxx
+lang = en
+in_file = input.csv
+out_file = complete.csv
+error_file = error.csv
+divider = $$
+throt_secs = 1
