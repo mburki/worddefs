@@ -40,6 +40,7 @@ throt_secs  = int(config['DictAPI']['throt_secs'])
 base_url    = 'https://od-api.oxforddictionaries.com:443'
 entries_url = base_url + '/api/v2/entries/'
 lemmas_url  = base_url + '/api/v2/lemmas/'
+gen_error   = 'An error has occured.'
 
 logging.basicConfig(format='%(asctime)s %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -47,15 +48,21 @@ logging.basicConfig(format='%(asctime)s %(levelname)s - %(message)s', level=logg
     
 def extract_def_from_dict(status_code, response):
 
-    definition_dict = json.loads(response.text)
+    try:
+        definition_dict = json.loads(response.text)
+    except:
+        pass
 
     if status_code == 200:
         try:
             definition = definition_dict['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['definitions'][0]
         except KeyError:
-            _, definition = get_definition(definition_dict['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['crossReferences'][0]['text']) 
+            try:
+                _, definition = get_definition(definition_dict['results'][0]['lexicalEntries'][0]['entries'][0]['senses'][0]['crossReferences'][0]['text']) 
+            except:
+                definition = gen_error
     else:
-        definition = definition_dict['error']
+        definition = gen_error
 
     return definition
 
@@ -77,7 +84,12 @@ def get_definition(word):
     else:
         definition = extract_def_from_dict(response.status_code, response)  
 
-    return response.status_code, definition
+    if definition == gen_error:
+        status_code = 510
+    else:
+        status_code = response.status_code
+
+    return status_code, definition
 
 
 def do_backup():
